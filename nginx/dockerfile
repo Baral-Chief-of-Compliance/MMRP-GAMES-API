@@ -1,0 +1,11 @@
+FROM nginx:1.29.1-alpine-slim
+
+RUN mkdir -p /home/app/tetris
+RUN mkdir -p /home/app/frontend
+
+COPY ./conf.d /etc/nginx/conf.d
+
+
+# Даем права nginx на чтение файлов
+RUN chown -R nginx:nginx /home/app/tetris
+RUN chmod -R 755 /home/app/tetris

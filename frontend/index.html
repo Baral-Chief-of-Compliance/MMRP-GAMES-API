@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игры ММРП - Мурманский морской рыбный порт</title>
+
+    <!-- Иконки для всех устройств -->
+    <link rel="icon" type="image/png" href="./static/MMRP_LOGO.png">
+    <link rel="icon" type="image/x-icon" href="./static/MMRP_LOGO.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="./static/MMRP_LOGO.ico">
+    
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="./static/MMRP_LOGO.png">
+    <link rel="apple-touch-icon-precomposed" href="./static/MMRP_LOGO.png">
+    
+    <!-- Android Chrome Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="./static/MMRP_LOGO.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="./static/MMRP_LOGO.png">
+    
+    <!-- Microsoft Tiles -->
+    <meta name="msapplication-TileImage" content="./static/MMRP_LOGO.png">
+    <meta name="msapplication-TileColor" content="#0f7eda">
+    <meta name="msapplication-config" content="none">
+    
+    <!-- Theme Color для мобильных браузеров -->
+    <meta name="theme-color" content="#0f7eda">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#0f7eda">
+
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(135deg, #0f7eda 0%, #0a6bc5 50%, #085ca8 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Эффект волн на фоне */
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg"><path d="M0 0v46.29c47.79 22.2 103.59 32.17 158 28 70.36-5.37 136.33-33.31 206.8-37.5 73.84-4.36 147.54 16.88 218.2 35.26 69.27 18 138.3 24.88 209.4 13.08 36.15-6 69.85-17.84 104.45-29.34C989.49 25 1113-14.29 1200 52.47V0z" fill="%23ffffff" opacity=".1"/></svg>');
+            background-size: 1200px 100px;
+            animation: wave 12s linear infinite;
+        }
+
+        .wave:nth-child(2) {
+            animation-duration: 16s;
+            opacity: 0.05;
+            bottom: 10px;
+        }
+
+        .wave:nth-child(3) {
+            animation-duration: 20s;
+            opacity: 0.03;
+            bottom: 20px;
+        }
+
+        @keyframes wave {
+            0% {
+                background-position-x: 0;
+            }
+            100% {
+                background-position-x: 1200px;
+            }
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+            z-index: 1;
+            position: relative;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            padding: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .title-container {
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(to right, white, #e6f2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header {
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 500px;
+            margin: 0 auto 50px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 18px 30px;
+            background: white;
+            color: #0f7eda;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(15, 126, 218, 0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            background: #f8f9fa;
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-icon {
+            font-size: 1.4rem;
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover .btn-icon {
+            transform: scale(1.2);
+        }
+
+        .about {
+            margin-top: 20px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            max-width: 700px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .about h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .about p {
+            line-height: 1.6;
+            font-weight: 300;
+            opacity: 0.9;
+            text-align: left;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            text-align: center;
+        }
+
+        /* Адаптивность для мобильных устройств */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .page-title {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .btn {
+                padding: 15px 25px;
+                font-size: 1rem;
+            }
+            
+            .logo {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .logo-container {
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .about {
+                padding: 20px;
+            }
+            
+            .buttons-container {
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Волны на фоне -->
+    <div class="wave"></div>
+    <div class="wave"></div>
+    <div class="wave"></div>
+    
+    <div class="container">
+        <div class="logo-container">
+            <div class="logo">
+                <img src="./static/MMRP_LOGO.png" alt="Логотип ММРП">
+            </div>
+            <div class="title-container">
+                <h2 class="page-title">Страница игр для ММРП</h2>
+                <p class="subtitle">АО "Мурманский морской рыбный порт"</p>
+            </div>
+        </div>
+        
+        <div class="header">
+            <h1>Игровая платформа</h1>
+            <p class="subtitle">Крупнейший арктический рыбный порт России приглашает вас в мир морских приключений</p>
+        </div>
+        
+        <div class="buttons-container">
+            <a href="/tetris" class="btn">
+                <span class="btn-icon">🎮</span>
+                Играть в портовый тетрис
+            </a>
+            
+            <!-- <button class="btn" onclick="playDocker()">
+                <span class="btn-icon">🐳</span>
+                Играть в Docker
+            </button> -->
+            
+            <a href="https://mmrp.ru/" class="btn" target="_blank">
+                <span class="btn-icon">🌐</span>
+                Посетить сайт ММРП
+            </a>
+        </div>
+        
+        <div class="about">
+            <h2>О компании</h2>
+            <p>Мурманский морской рыбный порт — ключевое предприятие рыбной отрасли России в Арктическом регионе. Порт специализируется на перевалке рыбной продукции, обслуживании рыбопромыслового флота и обеспечении логистических цепочек в сложных климатических условиях Заполярья.</p>
+            <p style="margin-top: 15px;">ММРП играет важнейшую роль в обеспечении продовольственной безопасности страны и развитии Северного морского пути как международной транспортной артерии.</p>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 АО "Мурманский морской рыбный порт". Все права защищены.</p>
+        </div>
+    </div>
+
+    <script>
+        function playPortTetris() {
+            alert('Запуск игры "Портовый тетрис"! В этой игре вы сможете управлять контейнерами в порту ММРП, развивая логистические навыки в условиях арктического порта.');
+            // Здесь будет код для запуска игры
+        }
+
+        function playDocker() {
+            alert('Запуск игры "Docker"! Освойте управление контейнерами в виртуальной среде порта. Узнайте, как эффективно организовывать логистические процессы в морском порту.');
+            // Здесь будет код для запуска игры
+        }
+    </script>
+</body>
+</html>
