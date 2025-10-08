@@ -1,9 +1,9 @@
 from typing import Annotated
 from uuid import uuid4
-from datetime import datetime
+from datetime import datetime, date
 
 from fastapi import FastAPI, Depends, HTTPException, status
-from sqlmodel import Session, select
+from sqlmodel import Session, select, func
 import pytz
 
 
@@ -75,5 +75,36 @@ def update_score(user_id: str, score: Score,  session: SessionDep):
             detail="Пользователь с таким id не найден"
         )
     
-# @app.get('/api/v1/tetris/leaderboard/')
-# def get_leaderboard(session: SessionDep) -> UserTetris:
+@app.get('/api/v1/tetris/leaderboard/')
+def get_leaderboard(session: SessionDep) -> UserTetris:
+    # Таблица лидеров за все время
+    users = session.exec(select(UserTetris).order_by(UserTetris.score))
+    return [
+        {
+            'name': user.name,
+            'score': user.score
+        }
+        for user in users
+    ]
+
+@app.get('/api/v1/tetris/leaderboard/today')
+def get_leaderboard(session: SessionDep) -> UserTetris:
+    # Таблица лидеров за сегодня
+    today = date.today()
+    start_of_day = datetime.combine(today, datetime.min.time())
+    end_of_day = datetime.combine(today, datetime.max.time())
+
+    users = session.exec(select(UserTetris).where(
+        UserTetris.updated_at >= start_of_day,
+        UserTetris.updated_at <= end_of_day
+    ).order_by(UserTetris.score))
+    return [
+        {
+            'name': user.name,
+            'score': user.score
+        }
+        for user in users
+    ]
+
+
+@app.get('/api/v1/tetris/get_random_username')
