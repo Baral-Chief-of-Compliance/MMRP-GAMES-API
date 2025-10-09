@@ -1,6 +1,14 @@
 version: "3.7"
 
 services:
+  backend:
+    build: './backend'
+    restart: always
+    volumes: 
+      - ./backend/:/home/app
+    ports:
+      - '8000:8000'
+      
   nginx:
     build: './nginx'
     restart: always

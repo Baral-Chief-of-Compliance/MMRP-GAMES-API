@@ -1,6 +1,8 @@
 from typing import Annotated
 from uuid import uuid4
 from datetime import datetime, date
+from contextlib import asynccontextmanager
+import random
 
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlmodel import Session, select, func
@@ -108,3 +110,8 @@ def get_leaderboard(session: SessionDep) -> UserTetris:
 
 
 @app.get('/api/v1/tetris/get_random_username')
+def get_random_username(session: SessionDep):
+    random_number = random.randint(100000, 999999)
+    return {
+        'username': f'users{random_number}'
+    }
