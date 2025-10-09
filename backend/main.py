@@ -78,9 +78,9 @@ def update_score(user_id: str, score: Score,  session: SessionDep):
         )
     
 @app.get('/tetris/leaderboard/')
-def get_leaderboard(session: SessionDep) -> UserTetris:
+def get_leaderboard(session: SessionDep):
     # Таблица лидеров за все время
-    users = session.exec(select(UserTetris).order_by(UserTetris.score))
+    users = session.exec(select(UserTetris).order_by(-UserTetris.score)).all()
     result : list = []
     if len(users) > 0 : result = [{'name': user.name, 'score': user.score} for user in users]
     return {
@@ -88,7 +88,7 @@ def get_leaderboard(session: SessionDep) -> UserTetris:
     }
 
 @app.get('/tetris/leaderboard/today')
-def get_leaderboard(session: SessionDep) -> UserTetris:
+def get_leaderboard(session: SessionDep):
     # Таблица лидеров за сегодня
     today = date.today()
     start_of_day = datetime.combine(today, datetime.min.time())
@@ -97,7 +97,7 @@ def get_leaderboard(session: SessionDep) -> UserTetris:
     users = session.exec(select(UserTetris).where(
         UserTetris.updated_at >= start_of_day,
         UserTetris.updated_at <= end_of_day
-    ).order_by(UserTetris.score))
+    ).order_by(-UserTetris.score)).all()
 
     result : list = []
     if len(users) > 0 : result = [{'name': user.name, 'score': user.score} for user in users]
