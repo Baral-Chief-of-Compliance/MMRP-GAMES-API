@@ -29,7 +29,7 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.post('/api/v1/tetris/users/')
+@app.post('/tetris/users/')
 def create_user(user: UserTetris, session: SessionDep) -> UserTetris:
     """Создание пользователя в системе"""
     if is_valid_email_strict(user.email):
@@ -61,7 +61,7 @@ def create_user(user: UserTetris, session: SessionDep) -> UserTetris:
             detail="Email невалидный"
         )
     
-@app.put('/api/v1/tetris/users/{user_id}/update-score')
+@app.put('/tetris/users/{user_id}/update-score')
 def update_score(user_id: str, score: Score,  session: SessionDep):
     """Обновить рекорд пользователя"""
     user_in_db = session.exec(select(UserTetris).where(UserTetris.id == user_id)).first()
@@ -77,19 +77,17 @@ def update_score(user_id: str, score: Score,  session: SessionDep):
             detail="Пользователь с таким id не найден"
         )
     
-@app.get('/api/v1/tetris/leaderboard/')
+@app.get('/tetris/leaderboard/')
 def get_leaderboard(session: SessionDep) -> UserTetris:
     # Таблица лидеров за все время
     users = session.exec(select(UserTetris).order_by(UserTetris.score))
-    return [
-        {
-            'name': user.name,
-            'score': user.score
-        }
-        for user in users
-    ]
+    result : list = []
+    if len(users) > 0 : result = [{'name': user.name, 'score': user.score} for user in users]
+    return {
+        'users': result
+    }
 
-@app.get('/api/v1/tetris/leaderboard/today')
+@app.get('/tetris/leaderboard/today')
 def get_leaderboard(session: SessionDep) -> UserTetris:
     # Таблица лидеров за сегодня
     today = date.today()
@@ -100,16 +98,15 @@ def get_leaderboard(session: SessionDep) -> UserTetris:
         UserTetris.updated_at >= start_of_day,
         UserTetris.updated_at <= end_of_day
     ).order_by(UserTetris.score))
-    return [
-        {
-            'name': user.name,
-            'score': user.score
-        }
-        for user in users
-    ]
+
+    result : list = []
+    if len(users) > 0 : result = [{'name': user.name, 'score': user.score} for user in users]
+    return {
+        'users': result
+    }
 
 
-@app.get('/api/v1/tetris/get_random_username')
+@app.get('/tetris/get_random_username')
 def get_random_username(session: SessionDep):
     random_number = random.randint(100000, 999999)
     return {
