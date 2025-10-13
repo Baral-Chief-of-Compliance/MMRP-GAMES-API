@@ -90,7 +90,7 @@ def get_leaderboard(session: SessionDep):
 @app.get('/tetris/leaderboard/today')
 def get_leaderboard(session: SessionDep):
     # Таблица лидеров за сегодня
-    today = date.today()
+    today = datetime.now(pytz.timezone('Europe/Moscow'))
     start_of_day = datetime.combine(today, datetime.min.time())
     end_of_day = datetime.combine(today, datetime.max.time())
 
