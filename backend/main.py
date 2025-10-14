@@ -67,10 +67,13 @@ def update_score(user_id: str, score: Score,  session: SessionDep):
     user_in_db = session.exec(select(UserTetris).where(UserTetris.id == user_id)).first()
     if user_in_db:
         user_in_db.updated_at = datetime.now(pytz.timezone('Europe/Moscow'))
-        user_in_db.score = score.score
-        session.commit()
-        session.refresh(user_in_db)
-        return user_in_db
+        if score.score > user_in_db.score:
+            user_in_db.score = score.score
+            session.commit()
+            session.refresh(user_in_db)
+            return user_in_db
+        else:
+            return user_in_db
     else:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
