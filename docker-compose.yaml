@@ -17,3 +17,4 @@ services:
     volumes:
       - ./frontend/:/home/app/frontend
       - ./tetris/:/home/app/tetris
+      - ./tetris_without_music/:/home/app/tetris_without_sound
