@@ -64,7 +64,7 @@
 			width: 500px;
 			height: 12px;
 			background-color: #00000000;
-			border: 3px solid #000;
+			border: 3px solid white;
 			padding: 1px;
 			border-radius: 12px;
 			visibility: visible;
@@ -82,8 +82,8 @@
 			width: 0%;
 			box-sizing: border-box;
 			transition: width 0.4s linear;
-			background-color: #000;
-			border: 1px solid #00000000;
+			background-color: white;
+			border: 1px solid white;
 			border-radius: 5px;
 			padding: 3px;
 			text-align: center;
@@ -130,7 +130,7 @@
 			right: 0;
 			font-size: 24px;
 			font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
-			color: black;
+			color: white;
 		}
 		#loading-footer {
 			position: absolute;
@@ -139,12 +139,12 @@
 			right: 0;
 			font-size: 24px;
 			font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
-			color: black;
+			color: white;
 		}
 	</style>
-<link id='-gd-engine-icon' rel='icon' type='image/png' href='Polk V1.0.icon.png' />
-<link rel='apple-touch-icon' href='Polk V1.0.apple-touch-icon.png'/>
-<link rel='manifest' href='Polk V1.0.manifest.json'>
+<link id='-gd-engine-icon' rel='icon' type='image/png' href='tetris.icon.png' />
+<link rel='apple-touch-icon' href='tetris.apple-touch-icon.png'/>
+<!-- <link rel='manifest' href='Polk V1.0.manifest.json'> -->
 
 </head>
 <body>
@@ -170,7 +170,7 @@
 		<div id='status-notice' class='godot' style='display: none;'></div>
 	</div>
 
-	<script type='text/javascript' src='index.js'></script>
+	<script type='text/javascript' src='tetris.js'></script>
 	<script type='text/javascript'>//<![CDATA[
 
 		const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"executable":"tetris","experimentalVK":true,"fileSizes":{"tetris.pck":45742000,"tetris.wasm":52303443},"focusCanvas":true,"gdextensionLibs":[]};
@@ -215,15 +215,15 @@
 
 			//Ответ дипсика
 			const baseHue = 204; // Hue для #0f7eda в HSL
-			const currentHueShift = 30 * Math.sin(2 * Math.PI * progress);
+			const currentHueShift = 8 * Math.sin(2 * Math.PI * progress); // Уменьшил амплитуду для мягкости
 			const currentColor = (baseHue + currentHueShift + 360) % 360;
 
-			// Создаем градиент с оттенками синего в диапазоне основного цвета
-			background.style.backgroundImage = `radial-gradient(
-				at 40% 25%, 
-				hsl(${currentColor}, 89%, 46%),
-				hsl(${(currentColor + 15) % 360}, 89%, 46%),
-				hsl(${(currentColor + 30) % 360}, 89%, 46%) 50%
+			// Создаем мягкий линейный градиент с близкими оттенками синего
+			background.style.backgroundImage = `linear-gradient(
+				135deg, 
+				hsl(${currentColor}, 89%, 46%) 0%,
+				hsl(${(currentColor - 5 + 360) % 360}, 89%, 42%) 50%,
+				hsl(${(currentColor - 10 + 360) % 360}, 89%, 38%) 100%
 			)`;
 			//Ответ дипсика
 
@@ -344,104 +344,104 @@
 							statusProgressInner.style.width = ((current/total)/1.345918239972628) * 100 + '%';
 							setStatusMode('progress');
 							if (current/total > 0.01 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Starting Download...';
+								document.getElementById('loading-footer').innerHTML = 'Начинаем разгрузку...';
 							}
 							if (current/total > 0.03 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Creating Temporary Directory...';
+								document.getElementById('loading-footer').innerHTML = 'Подготавливаем доки...';
 							}
 							if (current/total > 0.07 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Reserving VRAM...';
+								document.getElementById('loading-footer').innerHTML = 'Резервируем портовые краны...';
 							}
 							if (current/total > 0.15 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Downoading Game Assets...';
+								document.getElementById('loading-footer').innerHTML = 'Разгружаем рыбные контейнеры...';
 							}
 							if (current/total > 0.29 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Downoading Godot Engine 3 HTML Packages...';
+								document.getElementById('loading-footer').innerHTML = 'Загружаем холодильное оборудование...';
 							}
 							if (current/total > 0.37 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Downoading Game Engine Runtime...';
+								document.getElementById('loading-footer').innerHTML = 'Подготавливаем портовую инфраструктуру...';
 							}
 							if (current/total > 0.5 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Creating User Data Folder...';
+								document.getElementById('loading-footer').innerHTML = 'Создаем складские помещения...';
 							} 
 							if (current/total > 0.51 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Extracting index.wasm';
+								document.getElementById('loading-footer').innerHTML = 'Сортируем улов по видам рыб';
 							}
 							if (current/total > 0.52 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Extracting index.pck';
+								document.getElementById('loading-footer').innerHTML = 'Упаковываем рыбную продукцию';
 							}
 							if (current/total > 0.53 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Praparing Execution index.js';
+								document.getElementById('loading-footer').innerHTML = 'Подготавливаем логистические маршруты';
 							}
 							if (current/total > 0.54 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Praparing Execution godotlib3.js';
+								document.getElementById('loading-footer').innerHTML = 'Настраиваем портовое оборудование';
 							}
 							if (current/total > 0.55 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Praparing Execution gameengineruntime3.js';
+								document.getElementById('loading-footer').innerHTML = 'Запускаем системы контроля качества';
 							}
 							if (current/total > 0.56 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Generating Patches...';
+								document.getElementById('loading-footer').innerHTML = 'Формируем партии для отгрузки...';
 							}
 							if (current/total > 0.58 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Generating Logic Instance...';
+								document.getElementById('loading-footer').innerHTML = 'Создаем рабочие смены...';
 							}
 							if (current/total > 0.6 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Generating Scene instances...';
+								document.getElementById('loading-footer').innerHTML = 'Расставляем бригады грузчиков...';
 							}
 							if (current/total > 0.62 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Reading User Data Folder...';
+								document.getElementById('loading-footer').innerHTML = 'Проверяем складские запасы...';
 							}
 							if (current/total > 0.63 * 1.334918239972628){
-								document.getElementById('loading-footer').innerHTML = 'Loading...';
+								document.getElementById('loading-footer').innerHTML = 'Загружаем...';
 							}
 							if (current/total > 0.65 * 1.334918239972628) {
-								document.getElementById('loading-footer').innerHTML = 'Building ByteCode...';
+								document.getElementById('loading-footer').innerHTML = 'Составляем товарные ведомости...';
 							}
 
 							if (current/total > 0.67 * 1.334918239972628) {
-								document.getElementById('loading-footer').innerHTML = 'Loading Scripts...';
+								document.getElementById('loading-footer').innerHTML = 'Обрабатываем судовые документы...';
 							}
 
 							if (current/total > 0.68 * 1.334918239972628) {
-								document.getElementById('loading-footer').innerHTML = 'Loading Styles...';
+								document.getElementById('loading-footer').innerHTML = 'Проверяем сертификаты качества...';
 							}
 
 							if (current/total > 0.69 * 1.334918239972628) {
-								document.getElementById('loading-footer').innerHTML = 'Creating Bubbles...';
+								document.getElementById('loading-footer').innerHTML = 'Подготавливаем рефрижераторы...';
 							}
 
 							if (current/total > 0.7 * 1.334918239972628) {
-								document.getElementById('loading-footer').innerHTML = 'Initializing Game Logic...';
+								document.getElementById('loading-footer').innerHTML = 'Инициализируем портовые операции...';
 							}
 
 							if (current/total > 0.74 * 1.334918239972628) {
-								document.getElementById('loading-footer').innerHTML = 'Loading Timer and Tween Scripts...';
+								document.getElementById('loading-footer').innerHTML = 'Синхронизируем график прибытия судов...';
 							}
 
 							if (current/total > 0.79 * 1.334918239972628) {
-								document.getElementById('loading-footer').innerHTML = 'Indexing Functions...';
+								document.getElementById('loading-footer').innerHTML = 'Инвентаризируем оборудование...';
 							}
 
 							if (current/total > 0.83 * 1.334918239972628) {
-								document.getElementById('loading-footer').innerHTML = 'Indexing Nodes and Scripts...';
+								document.getElementById('loading-footer').innerHTML = 'Распределяем задачи между бригадами...';
 							}
 							if (current/total > 0.85 * 1.334918239972628) {
-								document.getElementById('loading-footer').innerHTML = 'Compiling GDScript ByteCode...';
+								document.getElementById('loading-footer').innerHTML = 'Формируем товарные накладные...';
 							}
 							if (current/total > 0.87 * 1.334918239972628) {
-								document.getElementById('loading-footer').innerHTML = 'Configuring Game Settings...';
+								document.getElementById('loading-footer').innerHTML = 'Настраиваем портовые весы...';
 							}
 
 							if (current/total > 0.91 * 1.334918239972628) {
-								document.getElementById('loading-footer').innerHTML = 'Optimizing Performance...';
+								document.getElementById('loading-footer').innerHTML = 'Оптимизируем логистические цепочки...';
 							}
 
 							if (current/total > 0.95 * 1.334918239972628) {
-								document.getElementById('loading-footer').innerHTML = 'Finalizing Initialization...';
+								document.getElementById('loading-footer').innerHTML = 'Завершаем подготовку к отгрузке...';
 							}
 
 							if (current/total > 0.99 * 1.334918239972628) {
-								document.getElementById('loading-footer').innerHTML = 'Launching Game Engine...';
+								document.getElementById('loading-footer').innerHTML = 'Запускаем портовые операции...';
 							}
 							if (current === total) {
 								// wait for progress bar animation
