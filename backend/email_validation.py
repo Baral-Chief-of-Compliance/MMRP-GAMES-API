@@ -13,7 +13,7 @@ def is_valid_email_strict(email: str) -> bool:
         bool: True если email валиден, False в противном случае
     """
     # Более строгое регулярное выражение
-    pattern = r'^[a-zA-Z0-9]([a-zA-Z0-9._-]*[a-zA-Z0-9])?@[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?(\.[a-zA-Z]{2,})+$'
+    pattern = r'^[a-zA-Zа-яА-Я0-9]([a-zA-Zа-яА-Я0-9._-]*[a-zA-Zа-яА-Я0-9])?@[a-zA-Zа-яА-Я0-9]([a-zA-Zа-яА-Я0-9-]*[a-zA-Zа-яА-Я0-9])?(\.[a-zA-Zа-яА-Я]{2,})+$'
     
     if not re.match(pattern, email):
         return False
