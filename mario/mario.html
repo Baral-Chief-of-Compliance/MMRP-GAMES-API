@@ -1,220 +1,475 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
-		<title>Docker</title>
-		<style>
-html, body, #canvas {
-	margin: 0;
-	padding: 0;
-	border: 0;
-}
+<html xmlns='http://www.w3.org/1999/xhtml' lang='' xml:lang=''>
+<head>
+	<meta charset='utf-8' />
+	<meta name='viewport' content='width=device-width, user-scalable=no' />
 
-body {
-	color: white;
-	background-color: black;
-	overflow: hidden;
-	touch-action: none;
-}
+	<meta name="msapplication-TileColor" content="#0f7eda">
+    <meta name="msapplication-config" content="none">
+	<meta name="theme-color" content="#0f7eda">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#0f7eda">
 
-#canvas {
-	display: block;
-}
+	<title>DockerMario</title>
+	<style type='text/css'>
 
-#canvas:focus {
-	outline: none;
-}
-
-#status, #status-splash, #status-progress {
-	position: absolute;
-	left: 0;
-	right: 0;
-}
-
-#status, #status-splash {
-	top: 0;
-	bottom: 0;
-}
-
-#status {
-	background-color: #0f7eda;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	visibility: hidden;
-}
-
-#status-splash {
-	max-height: 100%;
-	max-width: 100%;
-	margin: auto;
-}
-
-#status-splash.show-image--false {
-	display: none;
-}
-
-#status-splash.fullsize--true {
-	height: 100%;
-	width: 100%;
-	object-fit: contain;
-}
-
-#status-splash.use-filter--false {
-	image-rendering: pixelated;
-}
-
-#status-progress, #status-notice {
-	display: none;
-}
-
-#status-progress {
-	bottom: 10%;
-	width: 50%;
-	margin: 0 auto;
-}
-
-#status-notice {
-	background-color: #5b3943;
-	border-radius: 0.5rem;
-	border: 1px solid #9b3943;
-	color: #e0e0e0;
-	font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
-	line-height: 1.3;
-	margin: 0 2rem;
-	overflow: hidden;
-	padding: 1rem;
-	text-align: center;
-	z-index: 1;
-}
-		</style>
-		<link id="-gd-engine-icon" rel="icon" type="image/png" href="mario.icon.png" />
-<link rel="apple-touch-icon" href="mario.apple-touch-icon.png"/>
-
-	</head>
-	<body>
-		<canvas id="canvas">
-			Your browser does not support the canvas tag.
-		</canvas>
-
-		<noscript>
-			Your browser does not support JavaScript.
-		</noscript>
-
-		<div id="status">
-			<img id="status-splash" class="show-image--false fullsize--false use-filter--false" src="mario.png" alt="">
-			<progress id="status-progress"></progress>
-			<div id="status-notice"></div>
-		</div>
-
-		<script src="mario.js"></script>
-		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"mario","experimentalVK":false,"fileSizes":{"mario.pck":386600,"mario.wasm":36145869},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
-const GODOT_THREADS_ENABLED = false;
-const engine = new Engine(GODOT_CONFIG);
-
-(function () {
-	const statusOverlay = document.getElementById('status');
-	const statusProgress = document.getElementById('status-progress');
-	const statusNotice = document.getElementById('status-notice');
-
-	let initializing = true;
-	let statusMode = '';
-
-	function setStatusMode(mode) {
-		if (statusMode === mode || !initializing) {
-			return;
+		body {
+			touch-action: none;
+			margin: 0;
+			border: 0 none;
+			padding: 0;
+			text-align: center;
+			background-color: black;
 		}
-		if (mode === 'hidden') {
-			statusOverlay.remove();
-			initializing = false;
-			return;
+
+		.background {
+		  position: fixed;
+		  top: 0;
+		  left: 0;
+		  width: 100%;
+		  height: 100%;
+		  background-size: cover;
+		  z-index: -2;
 		}
-		statusOverlay.style.visibility = 'visible';
-		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
-		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
-		statusMode = mode;
-	}
-
-	function setStatusNotice(text) {
-		while (statusNotice.lastChild) {
-			statusNotice.removeChild(statusNotice.lastChild);
+		#canvas {
+			display: block;
+			margin: 0;
+			color: white;
 		}
-		const lines = text.split('\n');
-		lines.forEach((line) => {
-			statusNotice.appendChild(document.createTextNode(line));
-			statusNotice.appendChild(document.createElement('br'));
-		});
-	}
 
-	function displayFailureNotice(err) {
-		console.error(err);
-		if (err instanceof Error) {
-			setStatusNotice(err.message);
-		} else if (typeof err === 'string') {
-			setStatusNotice(err);
-		} else {
-			setStatusNotice('An unknown error occurred.');
+		#canvas:focus {
+			outline: none;
 		}
-		setStatusMode('notice');
-		initializing = false;
-	}
 
-	const missing = Engine.getMissingFeatures({
-		threads: GODOT_THREADS_ENABLED,
-	});
+		.godot {
+			font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
+			color: #e0e0e0;
+			background-color: #3b3943;
+			background-image: linear-gradient(to bottom, #403e48, #35333c);
+			border: 1px solid #45434e;
+			box-shadow: 0 0 1px 1px #2f2d35;
+		}
 
-	if (missing.length !== 0) {
-		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
-			let serviceWorkerRegistrationPromise;
-			try {
-				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
-			} catch (err) {
-				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
+
+		/* Status display
+		 * ============== */
+
+		#status {
+			position: absolute;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			/* don't consume click events - make children visible explicitly */
+			visibility: hidden;
+		}
+
+		#status-progress {
+			width: 500px;
+			height: 12px;
+			background-color: #00000000;
+			border: 3px solid white;
+			padding: 1px;
+			border-radius: 12px;
+			visibility: visible;
+		}
+
+		@media only screen and (orientation:portrait) {
+			#status-progress {
+				width: 61.8%;
 			}
-			// There's a chance that installing the service worker would fix the issue
-			Promise.race([
-				serviceWorkerRegistrationPromise.then((registration) => {
-					if (registration != null) {
-						return Promise.reject(new Error('Service worker already exists.'));
-					}
-					return registration;
-				}).then(() => engine.installServiceWorker()),
-				// For some reason, `getRegistration()` can stall
-				new Promise((resolve) => {
-					setTimeout(() => resolve(), 2000);
-				}),
-			]).then(() => {
-				// Reload if there was no error.
-				window.location.reload();
-			}).catch((err) => {
-				console.error('Error while registering service worker:', err);
-			});
-		} else {
-			// Display the message as usual
-			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
-			displayFailureNotice(missingMsg + missing.join('\n'));
 		}
-	} else {
-		setStatusMode('progress');
-		engine.startGame({
-			'onProgress': function (current, total) {
-				if (current > 0 && total > 0) {
-					statusProgress.value = current;
-					statusProgress.max = total;
-				} else {
-					statusProgress.removeAttribute('value');
-					statusProgress.removeAttribute('max');
+
+		#status-progress-inner {
+			
+			height: 1px;
+			width: 0%;
+			box-sizing: border-box;
+			transition: width 0.4s linear;
+			background-color: white;
+			border: 1px solid white;
+			border-radius: 5px;
+			padding: 3px;
+			text-align: center;
+			transform: translate(2px, 2px);
+		}
+
+		#status-indeterminate {
+			height: 42px;
+			visibility: visible;
+			position: relative;
+		}
+
+		#status-indeterminate > div {
+			width: 4.5px;
+			height: 0;
+			border-style: solid;
+			border-width: 9px 3px 0 3px;
+			border-color: #2b2b2b transparent transparent transparent;
+			transform-origin: center 21px;
+			position: absolute;
+		}
+
+		#status-indeterminate > div:nth-child(1) { transform: rotate( 22.5deg); }
+		#status-indeterminate > div:nth-child(2) { transform: rotate( 67.5deg); }
+		#status-indeterminate > div:nth-child(3) { transform: rotate(112.5deg); }
+		#status-indeterminate > div:nth-child(4) { transform: rotate(157.5deg); }
+		#status-indeterminate > div:nth-child(5) { transform: rotate(202.5deg); }
+		#status-indeterminate > div:nth-child(6) { transform: rotate(247.5deg); }
+		#status-indeterminate > div:nth-child(7) { transform: rotate(292.5deg); }
+		#status-indeterminate > div:nth-child(8) { transform: rotate(337.5deg); }
+
+		#status-notice {
+			margin: 0 100px;
+			line-height: 1.3;
+			visibility: visible;
+			padding: 4px 6px;
+			visibility: visible;
+		}
+
+		#loading-header {
+			position: absolute;
+			top: 39%;
+			left: 0;
+			right: 0;
+			font-size: 24px;
+			font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+			color: white;
+		}
+		#loading-footer {
+			position: absolute;
+			top: 55%;
+			left: 0;
+			right: 0;
+			font-size: 24px;
+			font-family: "Segoe UI", Frutiger, "Frutiger Linotype", "Dejavu Sans", "Helvetica Neue", Arial, sans-serif;
+			color: white;
+		}
+	</style>
+<link id='-gd-engine-icon' rel='icon' type='image/png' href='mario.icon.png' />
+<link rel='apple-touch-icon' href='mario.apple-touch-icon.png'/>
+<!-- <link rel='manifest' href='Polk V1.0.manifest.json'> -->
+
+</head>
+<body>
+	<div class="background"></div>
+	<div id='loading-header'><b>Мурманский Морской Рыбный Порт<b></div>
+	<div id='loading-footer'><b>Загрузка. Пожалуйста подождите</b></div>
+	<canvas id='canvas'>
+		HTML5 canvas appears to be unsupported in the current browser.<br />
+		Please try updating or use a different browser.
+	</canvas>
+	<div id='status'>
+		<div id='status-progress' style='display: none;' oncontextmenu='event.preventDefault();'><div id ='status-progress-inner'></div></div>
+		<div id='status-indeterminate' style='display: none;' oncontextmenu='event.preventDefault();'>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+			<div></div>
+		</div>
+		<div id='status-notice' class='godot' style='display: none;'></div>
+	</div>
+
+	<script type='text/javascript' src='mario.js'></script>
+	<script type='text/javascript'>//<![CDATA[
+
+		const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"mario","experimentalVK":false,"fileSizes":{"mario.pck":678596,"mario.wasm":36145869},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+		const GODOT_THREADS_ENABLED = false;
+		const engine = new Engine(GODOT_CONFIG);
+
+
+
+		const Background = document.querySelector('.background');
+		let rotation = 0;
+		const rotationSpeed = 0.9; // Change this value to control the rotation speed
+		function rotateBackground() {
+			rotation += rotationSpeed;
+			Background.style.transform = `rotate(${rotation}deg) scale(${4.4})`;
+			requestAnimationFrame(rotateBackground);
+		}
+
+		rotateBackground();
+		// Function to generate a random hue
+
+		let currentHue = getRandomHue();
+		let animationRequestId = null;
+
+		function getRandomHue() {
+		  return Math.floor(Math.random() * 360);
+		}
+
+		function animateColorChange(timestamp) {
+		  if (!animationRequestId) {
+			animationRequestId = timestamp;
+		  }
+
+		  const background = document.querySelector('.background');
+		  const currentTime = timestamp || performance.now();
+		  const duration = 5000; // Duration of the animation in milliseconds
+
+		  function updateColor(currentTime) {
+			const startTime = animationRequestId;
+			const elapsed = currentTime - startTime;
+			const progress = (elapsed % duration) / duration;
+
+			// const currentHueShift = 30 * Math.sin(2 * Math.PI * progress);
+			// const currentColor = (currentHue + currentHueShift + 360) % 360;
+			// background.style.backgroundImage = `radial-gradient(at 40% 25%, hsl(${currentColor}, 100%, 70%),hsl(${(currentColor+ 230) % 360}, 100%, 70%), hsl(${(currentColor + 110) % 360}, 100%, 70%) 50%)`;
+
+			//Ответ дипсика
+			const baseHue = 204; // Hue для #0f7eda в HSL
+			const currentHueShift = 8 * Math.sin(2 * Math.PI * progress); // Уменьшил амплитуду для мягкости
+			const currentColor = (baseHue + currentHueShift + 360) % 360;
+
+			// Создаем мягкий линейный градиент с близкими оттенками синего
+			background.style.backgroundImage = `linear-gradient(
+				135deg, 
+				hsl(${currentColor}, 89%, 46%) 0%,
+				hsl(${(currentColor - 5 + 360) % 360}, 89%, 42%) 50%,
+				hsl(${(currentColor - 10 + 360) % 360}, 89%, 38%) 100%
+			)`;
+			//Ответ дипсика
+
+			animationRequestId = requestAnimationFrame(updateColor);
+		  }
+
+		  requestAnimationFrame(updateColor);
+		}
+
+		// Call the function when the page loads
+		window.addEventListener('load', () => {
+		  animateColorChange();
+		});
+		(function() {
+			const INDETERMINATE_STATUS_STEP_MS = 100;
+			var statusProgress = document.getElementById('status-progress');
+			var statusProgressInner = document.getElementById('status-progress-inner');
+			var statusIndeterminate = document.getElementById('status-indeterminate');
+			var statusNotice = document.getElementById('status-notice');
+
+			var initializing = true;
+			var statusMode = 'hidden';
+
+			var animationCallbacks = [];
+			function animate(time) {
+				animationCallbacks.forEach(callback => callback(time));
+				requestAnimationFrame(animate);
+			}
+			requestAnimationFrame(animate);
+
+			function setStatusMode(mode) {
+
+				if (statusMode === mode || !initializing)
+					return;
+				[statusProgress, statusIndeterminate, statusNotice].forEach(elem => {
+					elem.style.display = 'none';
+				});
+				animationCallbacks = animationCallbacks.filter(function(value) {
+					return (value != animateStatusIndeterminate);
+				});
+				switch (mode) {
+					case 'progress':
+						statusProgress.style.display = 'block';
+						break;
+					case 'indeterminate':
+						statusIndeterminate.style.display = 'block';
+						animationCallbacks.push(animateStatusIndeterminate);
+						break;
+					case 'notice':
+						statusNotice.style.display = 'block';
+						break;
+					case 'hidden':
+						break;
+					default:
+						throw new Error('Invalid status mode');
 				}
-			},
-		}).then(() => {
-			setStatusMode('hidden');
-		}, displayFailureNotice);
-	}
-}());
-		</script>
-	</body>
+				statusMode = mode;
+			}
+
+			function animateStatusIndeterminate(ms) {
+				var i = Math.floor(ms / INDETERMINATE_STATUS_STEP_MS % 8);
+				if (statusIndeterminate.children[i].style.borderTopColor == '') {
+					Array.prototype.slice.call(statusIndeterminate.children).forEach(child => {
+						child.style.borderTopColor = '';
+					});
+					statusIndeterminate.children[i].style.borderTopColor = '#dfdfdf';
+				}
+			}
+
+			function setStatusNotice(text) {
+				while (statusNotice.lastChild) {
+					statusNotice.removeChild(statusNotice.lastChild);
+				}
+				var lines = text.split('\n');
+				lines.forEach((line) => {
+					statusNotice.appendChild(document.createTextNode(line));
+					statusNotice.appendChild(document.createElement('br'));
+				});
+			};
+
+			function displayFailureNotice(err) {
+				var msg = err.message || err;
+				console.error(msg);
+				setStatusNotice(msg);
+				setStatusMode('notice');
+				initializing = false;
+
+				// Step 1: Get a reference to the div element
+				const divElement = document.getElementById('loading-footer');
+
+				// Step 2: Create a new anchor element
+				const linkElement = document.createElement('a');
+
+				// Step 3: Set the 'href' attribute of the anchor element
+				const linkURL = 'https://mmrp-games.ru'; // Replace with your desired link URL
+				linkElement.setAttribute('href', linkURL);
+
+				// Step 4: Set the inner text or HTML content of the anchor element
+				const linkText = 'Retry'; // Replace with your desired link text
+				linkElement.innerText = linkText; // If you want to set plain text
+				// Alternatively, you can set HTML content like this:
+				// linkElement.innerHTML = '<strong>Click here to visit the link</strong>';
+				linkElement.style.textDecoration = 'none'; // Disable underline
+				linkElement.style.color = 'black'; // Make the text white
+				// Step 5: Replace the content of the div element with the anchor element
+				divElement.innerHTML = ''; // Clear existing content of the div
+				divElement.appendChild(linkElement); // Add the anchor element to the div
+
+			};
+
+			if (!Engine.isWebGLAvailable()) {
+				displayFailureNotice('WebGL not available');
+			} else {
+				setStatusMode('indeterminate');
+				engine.startGame({
+					'onProgress': function (current, total) {
+						if (total > 0) {
+							statusProgressInner.style.width = ((current/total)/1.345918239972628) * 100 + '%';
+							setStatusMode('progress');
+							if (current/total > 0.01 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Выполняем грузовые операции...';
+							}
+							if (current/total > 0.03 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Осуществляем погрузо-разгрузочные работы...';
+							}
+							if (current/total > 0.07 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Разгружаем крупнотоннажные контейнеры...';
+							}
+							if (current/total > 0.15 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Развиваем материально-техническую базу...';
+							}
+							if (current/total > 0.29 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Создаём инфраструктурные объекты...';
+							}
+							if (current/total > 0.37 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Осуществляем перевозку сборных грузов...';
+							}
+							if (current/total > 0.5 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Соблюдаем температурный режим...';
+							} 
+							if (current/total > 0.51 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Храним генеральные грузы...';
+							}
+							if (current/total > 0.52 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Осуществляем технологическое присоединение к электросетям...';
+							}
+							if (current/total > 0.53 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Тестируем средства защиты...';
+							}
+							if (current/total > 0.54 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Проводим физико-химические измерения...';
+							}
+							if (current/total > 0.55 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Организуем пропускной режим...';
+							}
+							if (current/total > 0.56 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Осуществляем обработку вагонов...';
+							}
+							if (current/total > 0.58 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Оказываем услуги такелажной мастерской...';
+							}
+							if (current/total > 0.6 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Подключаем суда к электропитанию...';
+							}
+							if (current/total > 0.62 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Повышаем квалификацию рабочих...';
+							}
+							if (current/total > 0.63 * 1.334918239972628){
+								document.getElementById('loading-footer').innerHTML = 'Организуем предрейсовые осмотры...';
+							}
+							if (current/total > 0.65 * 1.334918239972628) {
+								document.getElementById('loading-footer').innerHTML = 'Осуществляем профессиональную подготовку...';
+							}
+
+							if (current/total > 0.67 * 1.334918239972628) {
+								document.getElementById('loading-footer').innerHTML = 'Расширяем горизонты сотрудничества...';
+							}
+
+							if (current/total > 0.68 * 1.334918239972628) {
+								document.getElementById('loading-footer').innerHTML = 'Принимаем и транспортируем отходы...';
+							}
+
+							if (current/total > 0.69 * 1.334918239972628) {
+								document.getElementById('loading-footer').innerHTML = 'Разрабатываем паспорта опасных отходов...';
+							}
+
+							if (current/total > 0.7 * 1.334918239972628) {
+								document.getElementById('loading-footer').innerHTML = 'Устанавливаем новые перегрузочные краны...';
+							}
+
+							if (current/total > 0.74 * 1.334918239972628) {
+								document.getElementById('loading-footer').innerHTML = 'Проходим экспортную сертификацию...';
+							}
+
+							if (current/total > 0.79 * 1.334918239972628) {
+								document.getElementById('loading-footer').innerHTML = 'Утверждаем стратегию развития...';
+							}
+
+							// if (current/total > 0.83 * 1.334918239972628) {
+							// 	document.getElementById('loading-footer').innerHTML = 'Распределяем задачи между бригадами...';
+							// }
+							// if (current/total > 0.85 * 1.334918239972628) {
+							// 	document.getElementById('loading-footer').innerHTML = 'Формируем товарные накладные...';
+							// }
+							// if (current/total > 0.87 * 1.334918239972628) {
+							// 	document.getElementById('loading-footer').innerHTML = 'Настраиваем портовые весы...';
+							// }
+
+							// if (current/total > 0.91 * 1.334918239972628) {
+							// 	document.getElementById('loading-footer').innerHTML = 'Оптимизируем логистические цепочки...';
+							// }
+
+							// if (current/total > 0.95 * 1.334918239972628) {
+							// 	document.getElementById('loading-footer').innerHTML = 'Завершаем подготовку к отгрузке...';
+							// }
+
+							// if (current/total > 0.99 * 1.334918239972628) {
+							// 	document.getElementById('loading-footer').innerHTML = 'Запускаем портовые операции...';
+							// }
+							if (current === total) {
+								// wait for progress bar animation
+								setTimeout(() => {
+									setStatusMode('indeterminate');
+								}, 200);
+							}
+						} else {
+							setStatusMode('indeterminate');
+						}
+					},
+				}).then(() => {
+					setStatusMode('hidden');
+					initializing = false;
+				}, displayFailureNotice);
+			}
+		})();
+	//]]></script>
+</body>
 </html>
+
 
